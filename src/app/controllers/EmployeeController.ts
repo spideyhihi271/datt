@@ -72,6 +72,7 @@ class EmployeeController {
         .sort(sort)
         .skip(skip)
         .limit(limit);
+        
       const paginationQuery = Employee.countDocuments({
         name: { $regex: keyword, $options: "i" },
       });
