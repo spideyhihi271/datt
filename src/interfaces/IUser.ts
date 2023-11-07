@@ -26,3 +26,8 @@ export interface IUserJWT {
   email: string;
   role: Role;
 }
+
+export interface IUserChangePass {
+  oldpass: string;
+  newpass: string;
+}

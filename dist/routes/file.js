@@ -15,6 +15,12 @@ router.post("/", upload.single("file"), FileController_1.default.postNewFile);
 router.get("/", FileController_1.default.getAllFile);
 // [GET] /api/v1/file/_id
 router.get("/:_id", FileController_1.default.getFileByID);
+// [PATCH] /api/v1/file/aprrove/_id
+router.patch("/approve/:_id", [auth_1.default.isCensorOrManager], FileController_1.default.approveFileByID);
+// [PATCH] /api/v1/file/reject/_id
+router.patch("/reject/:_id", [auth_1.default.isCensorOrManager], FileController_1.default.rejectFileByID);
+// [PATCH] /api/v1/file/_id
+router.patch("/:_id", upload.single("file"), [auth_1.default.isCensorOrManager], FileController_1.default.patchFileByID);
 // [POST] /api/v1/file/save/_id
 router.post("/save/:_id", [auth_1.default.isManager], FileController_1.default.saveOnDB);
 exports.default = router;

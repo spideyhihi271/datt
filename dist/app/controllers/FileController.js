@@ -3,14 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
 const axios_1 = __importDefault(require("axios"));
+const mongoose_1 = __importDefault(require("mongoose"));
 const xlsx_1 = __importDefault(require("xlsx"));
 const Enum_1 = require("../../interfaces/Enum");
-const File_1 = require("../models/File");
 const firebase_1 = __importDefault(require("../../services/firebase"));
 const createPagination_1 = __importDefault(require("../../utils/createPagination"));
 const createSort_1 = __importDefault(require("../../utils/createSort"));
+const File_1 = require("../models/File");
 const EmployeeController_1 = __importDefault(require("./EmployeeController"));
 const EquipController_1 = __importDefault(require("./EquipController"));
 const MonitoringController_1 = __importDefault(require("./MonitoringController"));
@@ -126,6 +126,71 @@ class FileController {
         catch (error) {
             throw new Error(error);
         }
+    }
+    async approveFileByID(req, res) {
+        const _id = req.params._id;
+        const file = await isFileExist(_id);
+        if (!file)
+            return res.status(404).send({ message: "Not found" });
+        // Aprove
+        const approveStatus = req.user.role === Enum_1.Role.Manager
+            ? Enum_1.StatusFile.passManager
+            : Enum_1.StatusFile.passCensor;
+        // Update
+        const { name, owner, type, url, deleted } = file;
+        const update = {
+            name,
+            owner,
+            type,
+            url,
+            deleted,
+            status: approveStatus,
+        };
+        const response = await File_1.File.findByIdAndUpdate(_id, update);
+        return res
+            .status(200)
+            .send({ message: "This file was approve", data: update });
+    }
+    async rejectFileByID(req, res) {
+        const _id = req.params._id;
+        const file = await isFileExist(_id);
+        if (!file)
+            return res.status(404).send({ message: "Not found" });
+        // Update
+        const { name, owner, type, url, deleted } = file;
+        const update = {
+            name,
+            owner,
+            type,
+            url,
+            deleted,
+            status: Enum_1.StatusFile.reject,
+        };
+        const response = await File_1.File.findByIdAndUpdate(_id, update);
+        return res
+            .status(200)
+            .send({ message: "This file was rejected", data: update });
+    }
+    async patchFileByID(req, res) {
+        const _id = req.params._id;
+        const file = await isFileExist(_id);
+        if (!req.file)
+            return res.status(403).send({
+                message: "No file",
+            });
+        const fileUpload = await firebase_1.default.uploadFile(req, res);
+        const { owner, type, deleted } = file;
+        const update = Object.assign({ owner, type, deleted }, {
+            name: fileUpload.name,
+            status: Enum_1.StatusFile.pending,
+            url: fileUpload.downloadURL,
+        });
+        // Save
+        const response = await File_1.File.findByIdAndUpdate(_id, update);
+        return res.status(200).send({
+            message: "File was update",
+            data: update,
+        });
     }
     async saveOnDB(req, res) {
         try {

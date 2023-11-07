@@ -8,7 +8,7 @@ const auth_1 = __importDefault(require("../middleware/auth"));
 const TraningController_1 = __importDefault(require("../app/controllers/TraningController"));
 const router = express_1.default.Router();
 // [POST] /api/v1/employee
-router.post("/", [auth_1.default.isCensorOrManager], TraningController_1.default.getTraining);
+router.post("/", [auth_1.default.isCensorOrManager], TraningController_1.default.postNewTraining);
 // [GET] /api/v1/employee
 router.get("/", TraningController_1.default.getTraining);
 // [GET] /api/v1/employee/:_id

@@ -4,8 +4,8 @@ import { ITraining } from "../../interfaces/ITraining";
 import { Training, validate } from "../models/Training";
 import mongoose from "mongoose";
 import createSort from "../../utils/createSort";
-import createPagination from "utils/createPagination";
-import { IPagination } from "interfaces/IPagination";
+import createPagination from "../../utils/createPagination";
+import { IPagination } from "../../interfaces/IPagination";
 
 const isExist = async (_id: string) => {
   // Validate
@@ -61,20 +61,22 @@ class TrainingController {
       const limit: number = params.limit ? parseInt(params.limit) : 20;
       const skip: number = page * limit;
       const sort: {} = createSort(params.sort);
+
       // Query
       const trainingQuery = Training.find({
-        name: { $regex: keyword, $options: "i" },
+        content: { $regex: keyword, $options: "i" },
       })
         .sort(sort)
         .skip(skip)
         .limit(limit);
       const paginationQuery = Training.countDocuments({
-        name: { $regex: keyword, $options: "i" },
+        content: { $regex: keyword, $options: "i" },
       });
 
       // Get data
       const trainning = await trainingQuery.exec();
       const total = await paginationQuery.exec();
+
       const data: IPagination = createPagination(trainning, total, 20, params);
       return res.status(200).send(data);
     } catch (error) {
@@ -117,7 +119,7 @@ class TrainingController {
     // Update
     const response = await Training.findByIdAndUpdate(_id, update);
     return res.status(200).send({
-      message: "Employee was updated!",
+      message: "Training was updated!",
       data: update,
     });
   }

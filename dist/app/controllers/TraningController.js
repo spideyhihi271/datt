@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Training_1 = require("../models/Training");
 const mongoose_1 = __importDefault(require("mongoose"));
 const createSort_1 = __importDefault(require("../../utils/createSort"));
-const createPagination_1 = __importDefault(require("utils/createPagination"));
+const createPagination_1 = __importDefault(require("../../utils/createPagination"));
 const isExist = async (_id) => {
     // Validate
     if (!mongoose_1.default.Types.ObjectId.isValid(_id))
@@ -67,13 +67,13 @@ class TrainingController {
             const sort = (0, createSort_1.default)(params.sort);
             // Query
             const trainingQuery = Training_1.Training.find({
-                name: { $regex: keyword, $options: "i" },
+                content: { $regex: keyword, $options: "i" },
             })
                 .sort(sort)
                 .skip(skip)
                 .limit(limit);
             const paginationQuery = Training_1.Training.countDocuments({
-                name: { $regex: keyword, $options: "i" },
+                content: { $regex: keyword, $options: "i" },
             });
             // Get data
             const trainning = await trainingQuery.exec();
@@ -119,7 +119,7 @@ class TrainingController {
         // Update
         const response = await Training_1.Training.findByIdAndUpdate(_id, update);
         return res.status(200).send({
-            message: "Employee was updated!",
+            message: "Training was updated!",
             data: update,
         });
     }

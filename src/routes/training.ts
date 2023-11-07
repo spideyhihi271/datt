@@ -7,7 +7,7 @@ const router: Router = express.Router();
 router.post(
   "/",
   [AuthMiddleWare.isCensorOrManager],
-  TraningController.getTraining
+  TraningController.postNewTraining
 );
 // [GET] /api/v1/employee
 router.get("/", TraningController.getTraining);

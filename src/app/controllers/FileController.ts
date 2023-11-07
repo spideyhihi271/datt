@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
 import axios from "axios";
-import xlsx from "xlsx";
 import { Response } from "express";
 import { IFile, IFileUpload } from "interfaces/IFile";
 import { IRequestWithUser } from "interfaces/IRequest";
+import mongoose from "mongoose";
+import xlsx from "xlsx";
 import { Role, StatusFile, TypeFile } from "../../interfaces/Enum";
 import { IPagination } from "../../interfaces/IPagination";
 import { IParamsGetFile } from "../../interfaces/IParam";
-import { File, validate } from "../models/File";
 import FileServices from "../../services/firebase";
 import createPagination from "../../utils/createPagination";
 import createSort from "../../utils/createSort";
+import { File, validate } from "../models/File";
 import EmployeeController from "./EmployeeController";
 import EquipController from "./EquipController";
 import MonitoringController from "./MonitoringController";
@@ -122,6 +122,73 @@ class FileController {
     } catch (error) {
       throw new Error(error);
     }
+  }
+  async approveFileByID(req: IRequestWithUser, res: Response) {
+    const _id = req.params._id;
+    const file: IFile = await isFileExist(_id);
+    if (!file) return res.status(404).send({ message: "Not found" });
+    // Aprove
+    const approveStatus =
+      req.user.role === Role.Manager
+        ? StatusFile.passManager
+        : StatusFile.passCensor;
+    // Update
+    const { name, owner, type, url, deleted } = file;
+    const update: IFile = {
+      name,
+      owner,
+      type,
+      url,
+      deleted,
+      status: approveStatus,
+    };
+    const response = await File.findByIdAndUpdate(_id, update);
+    return res
+      .status(200)
+      .send({ message: "This file was approve", data: update });
+  }
+  async rejectFileByID(req: IRequestWithUser, res: Response) {
+    const _id = req.params._id;
+    const file: IFile = await isFileExist(_id);
+    if (!file) return res.status(404).send({ message: "Not found" });
+    // Update
+    const { name, owner, type, url, deleted } = file;
+    const update: IFile = {
+      name,
+      owner,
+      type,
+      url,
+      deleted,
+      status: StatusFile.reject,
+    };
+    const response = await File.findByIdAndUpdate(_id, update);
+    return res
+      .status(200)
+      .send({ message: "This file was rejected", data: update });
+  }
+  async patchFileByID(req: IRequestWithUser, res: Response) {
+    const _id = req.params._id;
+    const file: IFile = await isFileExist(_id);
+    if (!req.file)
+      return res.status(403).send({
+        message: "No file",
+      });
+    const fileUpload = await FileServices.uploadFile(req, res);
+    const { owner, type, deleted } = file;
+    const update: IFile = Object.assign(
+      { owner, type, deleted },
+      {
+        name: fileUpload.name,
+        status: StatusFile.pending,
+        url: fileUpload.downloadURL,
+      }
+    );
+    // Save
+    const response = await File.findByIdAndUpdate(_id, update);
+    return res.status(200).send({
+      message: "File was update",
+      data: update,
+    });
   }
   async saveOnDB(req: IRequestWithUser, res: Response) {
     try {
