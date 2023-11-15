@@ -34,7 +34,7 @@ class UserController {
                 ...data,
                 password: passwordHash,
             };
-            const response = await new User_1.User(newUser);
+            const response = await new User_1.User(newUser).save();
             return res.status(200).send({ data });
         }
         catch (error) {
