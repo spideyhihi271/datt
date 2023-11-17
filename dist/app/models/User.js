@@ -22,7 +22,7 @@ userSchema.methods.generateToken = function () {
         email: this.email,
         role: this.role,
     }, process.env.TOKEN_SERECT_KEY, {
-        expiresIn: "30s",
+        expiresIn: "10m",
     });
     return token;
 };
