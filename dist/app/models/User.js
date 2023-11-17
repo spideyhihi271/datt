@@ -22,7 +22,7 @@ userSchema.methods.generateToken = function () {
         email: this.email,
         role: this.role,
     }, process.env.TOKEN_SERECT_KEY, {
-        expiresIn: "2h",
+        expiresIn: "30s",
     });
     return token;
 };
@@ -32,7 +32,7 @@ userSchema.methods.generateRefreshToken = function () {
         email: this.email,
         role: this.role,
     }, process.env.REFRESH_SERECT_KEY, {
-        expiresIn: "30s",
+        expiresIn: "7d",
     });
     return refreshToken;
 };
