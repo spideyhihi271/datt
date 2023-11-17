@@ -32,7 +32,7 @@ userSchema.methods.generateRefreshToken = function () {
         email: this.email,
         role: this.role,
     }, process.env.REFRESH_SERECT_KEY, {
-        expiresIn: "7d",
+        expiresIn: "30s",
     });
     return refreshToken;
 };
