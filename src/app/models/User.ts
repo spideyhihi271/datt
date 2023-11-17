@@ -25,7 +25,7 @@ userSchema.methods.generateToken = function (this: IUser): string {
     },
     process.env.TOKEN_SERECT_KEY,
     {
-      expiresIn: "10m",
+      expiresIn: "2h",
     }
   );
   return token;
