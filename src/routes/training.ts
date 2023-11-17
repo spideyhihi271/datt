@@ -14,9 +14,17 @@ router.get("/", TraningController.getTraining);
 // [GET] /api/v1/employee/:_id
 router.get("/:_id", TraningController.getTrainingById);
 // [PATCH] /api/v1/employee/:_id
-router.patch("/:_id", TraningController.patchTrainingById);
+router.patch(
+  "/:_id",
+  [AuthMiddleWare.isManager],
+  TraningController.patchTrainingById
+);
 // [DELETED] /api/v1/employee/:_id
-router.delete("/:_id", TraningController.deletedTrainingById);
+router.delete(
+  "/:_id",
+  [AuthMiddleWare.isManager],
+  TraningController.deletedTrainingById
+);
 
 // Export
 export default router;

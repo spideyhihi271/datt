@@ -14,9 +14,17 @@ router.get("/", EmployeeController.getEmployee);
 // [GET] /api/v1/employee/:_id
 router.get("/:_id", EmployeeController.getEmployeeByID);
 // [PATCH] /api/v1/employee/:_id
-router.patch("/:_id", EmployeeController.patchEmployeeByID);
+router.patch(
+  "/:_id",
+  [AuthMiddleWare.isManager],
+  EmployeeController.patchEmployeeByID
+);
 // [DELETED] /api/v1/employee/:_id
-router.delete("/:_id", EmployeeController.deletedEmployeeByID);
+router.delete(
+  "/:_id",
+  [AuthMiddleWare.isManager],
+  EmployeeController.deletedEmployeeByID
+);
 
 // Export
 export default router;

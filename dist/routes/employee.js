@@ -14,9 +14,9 @@ router.get("/", EmployeeController_1.default.getEmployee);
 // [GET] /api/v1/employee/:_id
 router.get("/:_id", EmployeeController_1.default.getEmployeeByID);
 // [PATCH] /api/v1/employee/:_id
-router.patch("/:_id", EmployeeController_1.default.patchEmployeeByID);
+router.patch("/:_id", [auth_1.default.isManager], EmployeeController_1.default.patchEmployeeByID);
 // [DELETED] /api/v1/employee/:_id
-router.delete("/:_id", EmployeeController_1.default.deletedEmployeeByID);
+router.delete("/:_id", [auth_1.default.isManager], EmployeeController_1.default.deletedEmployeeByID);
 // Export
 exports.default = router;
 //# sourceMappingURL=employee.js.map

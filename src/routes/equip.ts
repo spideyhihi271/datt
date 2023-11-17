@@ -14,9 +14,9 @@ router.get("/", EquipController.getEquips);
 // [GET] /api/v1/employee/:_id
 router.get("/:_id", EquipController.getEquipByID);
 // [PATCH] /api/v1/employee/:_id
-router.patch("/:_id", EquipController.patchEquipByID);
+router.patch("/:_id",[AuthMiddleware.isManager], EquipController.patchEquipByID);
 // [DELETED] /api/v1/employee/:_id
-router.delete("/:_id", EquipController.deletedEquipByID);
+router.delete("/:_id", [AuthMiddleware.isManager], EquipController.deletedEquipByID);
 
 // Export
 export default router;

@@ -14,9 +14,9 @@ router.get("/", EquipController_1.default.getEquips);
 // [GET] /api/v1/employee/:_id
 router.get("/:_id", EquipController_1.default.getEquipByID);
 // [PATCH] /api/v1/employee/:_id
-router.patch("/:_id", EquipController_1.default.patchEquipByID);
+router.patch("/:_id", [auth_1.default.isManager], EquipController_1.default.patchEquipByID);
 // [DELETED] /api/v1/employee/:_id
-router.delete("/:_id", EquipController_1.default.deletedEquipByID);
+router.delete("/:_id", [auth_1.default.isManager], EquipController_1.default.deletedEquipByID);
 // Export
 exports.default = router;
 //# sourceMappingURL=equip.js.map

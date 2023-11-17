@@ -14,9 +14,9 @@ router.get("/", TraningController_1.default.getTraining);
 // [GET] /api/v1/employee/:_id
 router.get("/:_id", TraningController_1.default.getTrainingById);
 // [PATCH] /api/v1/employee/:_id
-router.patch("/:_id", TraningController_1.default.patchTrainingById);
+router.patch("/:_id", [auth_1.default.isManager], TraningController_1.default.patchTrainingById);
 // [DELETED] /api/v1/employee/:_id
-router.delete("/:_id", TraningController_1.default.deletedTrainingById);
+router.delete("/:_id", [auth_1.default.isManager], TraningController_1.default.deletedTrainingById);
 // Export
 exports.default = router;
 //# sourceMappingURL=training.js.map
